@@ -9,7 +9,7 @@ const Home = () => {
     <Container maxWidth="md" sx={{ mt: 8 }}>
       <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
         <Typography variant="h3" component="h1" gutterBottom color="primary">
-          Welcome to Our Platform
+          Welcome to Online Travel And Tours
         </Typography>
         <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
           Choose your registration type to get started

@@ -42,8 +42,12 @@ const Login = () => {
       localStorage.setItem("role", response.data.role);
   
       alert("Login successful!");
-      // Redirect to dashboard
-      navigate("/dashboard");
+      // Redirect based on role
+      if (response.data.role.toLowerCase() === "client") {
+        navigate("/client-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error) {
       setError(error.response?.data?.message || "Invalid credentials");
     } finally {
