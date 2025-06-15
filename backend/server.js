@@ -252,22 +252,35 @@ app.post("/api/bookings", verifyToken, (req, res) => {
 
 // Get user bookings
 app.get("/api/bookings", verifyToken, (req, res) => {
-  const userId = req.user.id;
+  const userRole = req.user.role;
+  let sql, params;
 
-  const sql = `
-    SELECT booking_id, destination, travel_date, return_date, travelers, 
-           accommodation, total_amount, payment_status, booking_status, created_at
-    FROM bookings 
-    WHERE user_id = ? 
-    ORDER BY created_at DESC
-  `;
+  if (userRole === "admin" || userRole === "staff") {
+    sql = `
+      SELECT b.booking_id, u.username, b.destination, b.travel_date, b.return_date, b.travelers, 
+             b.accommodation, b.total_amount, b.payment_status, b.booking_status, b.created_at
+      FROM bookings b
+      JOIN users u ON b.user_id = u.id
+      ORDER BY b.created_at DESC
+    `;
+    params = [];
+  } else {
+    sql = `
+      SELECT booking_id, destination, travel_date, return_date, travelers, 
+             accommodation, total_amount, payment_status, booking_status, created_at
+      FROM bookings 
+      WHERE user_id = ? 
+      ORDER BY created_at DESC
+    `;
+    params = [req.user.id];
+  }
 
-  db.query(sql, [userId], (err, results) => {
+  db.query(sql, params, (err, results) => {
     if (err) {
       console.error("Error fetching bookings:", err);
       return res.status(500).json({ message: "Failed to fetch bookings" });
     }
-
+    console.log("All bookings query results:", results); // Debug log
     res.json(results);
   });
 });
@@ -275,24 +288,51 @@ app.get("/api/bookings", verifyToken, (req, res) => {
 // Get booking by ID
 app.get("/api/bookings/:bookingId", verifyToken, (req, res) => {
   const { bookingId } = req.params;
-  const userId = req.user.id;
+  const userRole = req.user.role;
+  let sql, params;
 
-  const sql = `
-    SELECT * FROM bookings 
-    WHERE booking_id = ? AND user_id = ?
-  `;
+  if (userRole === "admin" || userRole === "staff") {
+    sql = `
+      SELECT b.*, u.username FROM bookings b
+      JOIN users u ON b.user_id = u.id
+      WHERE b.booking_id = ?
+    `;
+    params = [bookingId];
+  } else {
+    sql = `
+      SELECT b.*, u.username FROM bookings b
+      JOIN users u ON b.user_id = u.id
+      WHERE b.booking_id = ? AND b.user_id = ?
+    `;
+    params = [bookingId, req.user.id];
+  }
 
-  db.query(sql, [bookingId, userId], (err, results) => {
+  db.query(sql, params, (err, results) => {
     if (err) {
       console.error("Error fetching booking:", err);
       return res.status(500).json({ message: "Failed to fetch booking" });
     }
-
-    if (results.length === 0) {
+    if (!results || results.length === 0) {
       return res.status(404).json({ message: "Booking not found" });
     }
-
+    console.log("Booking by ID result:", results[0]); // Debug log
     res.json(results[0]);
+  });
+});
+
+// Get all users (admin/staff only)
+app.get("/api/admin/users", verifyToken, (req, res) => {
+  const userRole = req.user.role;
+  if (userRole !== "admin" && userRole !== "staff") {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+  const sql = `SELECT id, username, role, email, full_name FROM users ORDER BY created_at DESC`;
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching users:", err);
+      return res.status(500).json({ message: "Failed to fetch users" });
+    }
+    res.json(results);
   });
 });
 

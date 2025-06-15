@@ -26,11 +26,11 @@ const RegisterAdmin = () => {
   const navigate = useNavigate();
 
   const adminRoles = [
-    { value: "Admin", label: "Administrator" },
-    { value: "Staff", label: "Staff Level 1" },
-    { value: "Staff2", label: "Staff Level 2" },
-    { value: "Staff3", label: "Staff Level 3" },
-    { value: "Staff4", label: "Staff Level 4" }
+    { value: "admin", label: "Administrator" },
+    { value: "staff", label: "Staff Level 1" },
+    { value: "staff2", label: "Staff Level 2" },
+    { value: "staff3", label: "Staff Level 3" },
+    { value: "staff4", label: "Staff Level 4" }
   ];
 
   const handleRegister = async () => {

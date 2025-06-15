@@ -55,7 +55,7 @@ const RegisterClient = () => {
         { 
           username, 
           password, 
-          role: "Client", // Fixed role for clients
+          role: "client", // Fixed role for clients
           email,
           fullName 
         }, 

@@ -45,8 +45,12 @@ const Login = () => {
       // Redirect based on role
       if (response.data.role.toLowerCase() === "client") {
         navigate("/client-dashboard");
-      } else {
+      } else if (response.data.role.toLowerCase() === "staff") {
+        navigate("/staff");
+      } else if (response.data.role.toLowerCase() === "admin") {
         navigate("/dashboard");
+      } else {
+        navigate("/"); // fallback
       }
     } catch (error) {
       setError(error.response?.data?.message || "Invalid credentials");

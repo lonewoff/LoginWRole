@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Typography, Button } from "@mui/material";
+import { useNavigate, Link } from "react-router-dom";
+import { Container, Typography, Button, Alert } from "@mui/material";
 
 const Dashboard1 = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState("");
   const [userRole, setRole] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     // Retrieve the user and role from localStorage
@@ -15,19 +16,20 @@ const Dashboard1 = () => {
     console.log("Stored User:", storedUser); // Debugging log
     console.log("Stored Role:", storedRole); // Debugging log
 
-    if (storedUser && storedRole) {
-      setUser(storedUser);
-      setRole(storedRole);
+    setUser(storedUser);
+    setRole(storedRole);
 
-      // If the user is not a staff member, redirect them
-      if (storedRole !== "Staff") {
-        console.log("Not Staff, redirecting to login..."); // Debugging log
-        navigate("/staff2");
-      }
-    } else {
-      console.log("No user or role found, redirecting to login..."); // Debugging log
+    // Commenting out redirect logic for debugging
+    // if (!storedUser || !storedRole) {
+    //   setError("No user or role found. Redirecting to login...");
+    //   setTimeout(() => navigate("/login"), 2000);
+    //   return;
+    // }
 
-    }
+    // if (storedRole.toLowerCase() !== "staff") {
+    //   setError(`Role mismatch: expected 'staff', got '${storedRole}'. Redirecting to login...`);
+    //   setTimeout(() => navigate("/login"), 2000);
+    // }
   }, [navigate]);
 
   return (
@@ -35,7 +37,7 @@ const Dashboard1 = () => {
       <Typography variant="h4">
         Welcome {userRole} {user}
       </Typography>
-
+      {error && <Alert severity="error" sx={{ my: 2 }}>{error}</Alert>}
       <Button
         variant="contained"
         color="secondary"
@@ -49,6 +51,9 @@ const Dashboard1 = () => {
       >
         Logout
       </Button>
+      <br /><br />
+      <Button component={Link} to="/all-bookings" variant="outlined" sx={{ mr: 1 }}>All Bookings</Button>
+      <Button component={Link} to="/print-report" variant="outlined" sx={{ mr: 1 }}>Print Report</Button>
     </Container>
   );
 };

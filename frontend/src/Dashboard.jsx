@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Container, Typography, Button } from "@mui/material";
 
 const Dashboard = () => {
@@ -17,7 +17,7 @@ const Dashboard = () => {
       setRole(storedRole);
 
       // If role is not Admin, redirect to the staff page
-    if (storedRole !== "Admin") {
+      if (storedRole.toLowerCase() !== "admin") {
         navigate("/staff");
       }
     } else {
@@ -46,6 +46,11 @@ const Dashboard = () => {
       >
         Logout
       </Button>
+      <br /><br />
+      <Button component={Link} to="/all-bookings" variant="outlined" sx={{ mr: 1 }}>All Bookings</Button>
+      <Button component={Link} to="/all-users" variant="outlined" sx={{ mr: 1 }}>All Users</Button>
+      <Button component={Link} to="/manage-destinations" variant="outlined" sx={{ mr: 1 }}>Manage Destinations</Button>
+      <Button component={Link} to="/print-report" variant="outlined" sx={{ mr: 1 }}>Print Report</Button>
     </Container>
   );
 };
